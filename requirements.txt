@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+GitPython
+pydriller
+semgrep
+mistralai
+python-dotenv
+pydantic
