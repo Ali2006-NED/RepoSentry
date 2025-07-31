@@ -3,9 +3,10 @@ import os
 from dotenv import load_dotenv
 
 from analyzer.repo_cloner import clone_repository
-from analyzer.metrics import evaluate_code_metrics
+from analyzer.metrics import  calculate_vuln_metrics
 from analyzer.commits import analyze_commits
 from analyzer.static_analyzer import run_semgrep_scan
+from analyzer.metrics import calculate_vuln_metrics
 
 
 load_dotenv()
@@ -42,11 +43,11 @@ if __name__ == '__main__':
     local_path = clone_repository(repo_url)
     static_results = run_semgrep_scan(local_path)
     commit_stats = analyze_commits(local_path)
-    code_metrics = evaluate_code_metrics(local_path)
-    ai_fixes = suggest_fixes(static_results)
+    code_metrics = calculate_vuln_metrics(static_results,local_path)
+    # ai_fixes = suggest_fixes(static_results)
 
     print(commit_stats)
     print(code_metrics)
-    print(ai_fixes)
+    # print(ai_fixes)
 
 
