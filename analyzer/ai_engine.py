@@ -19,7 +19,7 @@ def suggest_fixes(semgrep_results):
     suggestions = []
     for issue in semgrep_results:
         code_snippet = issue.get("code", "")
-        prompt = f"Detect any vulnerability in this code and suggest a fix:\n{code_snippet}"
+        prompt = f"Detect any vulnerability in this code and suggest a fix:\n{code_snippet}\nYour response should be professional and don't use language like 'I have...'"
 
         try:
             response = client.chat.complete(
@@ -39,15 +39,14 @@ def suggest_fixes(semgrep_results):
     return suggestions
 
 if __name__ == '__main__':
-    repo_url = 'https://github.com/Ali2006-NED/Inventory-Management-System.git'
+    repo_url = 'https://github.com/Okaymisba/Mash.git'
     local_path = clone_repository(repo_url)
     static_results = run_semgrep_scan(local_path)
     commit_stats = analyze_commits(local_path)
     code_metrics = calculate_vuln_metrics(static_results,local_path)
-    # ai_fixes = suggest_fixes(static_results)
+    ai_fixes = suggest_fixes(static_results)
 
     print(commit_stats)
     print(code_metrics)
-    # print(ai_fixes)
-
+    print(ai_fixes)
 

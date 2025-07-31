@@ -9,7 +9,7 @@ def analyze_commits(repo_path):
         stats['total_commits'] += 1
         stats.get("contributors").add(commit.author.name)
 
-        if commit.lines > 500:
+        if commit.lines > 50:
             stats['large_commits'].append({"hash":commit.hash,
                                            'message':commit.msg,
                                            'lines_changed':commit.lines
