@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <!-- Static Analysis -->
+  <div class="bg-white p-6 rounded-lg shadow-lg">
+    <h2 class="text-xl font-semibold mb-4">🔎 Static Analysis</h2>
+    <pre class="bg-gray-900 text-green-200 p-4 rounded text-sm overflow-x-auto">{{ static_analysis | tojson(indent=2) }}</pre>
+  </div>
+
+  <!-- Commit Analysis -->
+  <div class="bg-white p-6 rounded-lg shadow-lg">
+    <h2 class="text-xl font-semibold mb-4">📜 Commit Analysis</h2>
+    <pre class="bg-gray-900 text-green-200 p-4 rounded text-sm overflow-x-auto">{{ commit_analysis | tojson(indent=2) }}</pre>
+  </div>
+
+  <!-- Metrics -->
+  <div class="bg-white p-6 rounded-lg shadow-lg col-span-2">
+    <h2 class="text-xl font-semibold mb-4">📊 Metrics</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div class="p-4 bg-indigo-50 rounded-lg text-center">
+        <p class="text-sm text-gray-600">Vulnerability Density</p>
+        <p class="text-2xl font-bold">{{ code_metrics.vulnerability_density }}</p>
+      </div>
+      <div class="p-4 bg-indigo-50 rounded-lg text-center">
+        <p class="text-sm text-gray-600">Risk Score</p>
+        <p class="text-2xl font-bold">{{ code_metrics.severity_risk_score }}</p>
+      </div>
+      <div class="p-4 bg-indigo-50 rounded-lg text-center">
+        <p class="text-sm text-gray-600">Security Debt</p>
+        <p class="text-2xl font-bold">{{ code_metrics.security_debt_score }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Suggestions -->
+  {% if ai_suggestions %}
+  <div class="bg-white p-6 rounded-lg shadow-lg col-span-2">
+    <h2 class="text-xl font-semibold mb-4">🤖 AI Fix Suggestions</h2>
+    <ul class="list-disc pl-6 text-gray-700">
+      {% for suggestion in ai_suggestions %}
+      <li>{{ suggestion }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

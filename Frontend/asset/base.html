@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RepoSentry - AI Security Analyzer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+  <!-- Navbar -->
+  <nav class="bg-indigo-600 p-4">
+    <div class="container mx-auto flex justify-between items-center">
+      <a href="/" class="text-white text-xl font-bold">RepoSentry</a>
+      <div>
+        <a href="/" class="text-gray-200 hover:text-white px-3">Home</a>
+        <a href="/docs" class="text-gray-200 hover:text-white px-3">API Docs</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <main class="container mx-auto mt-6">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-gray-300 p-4 mt-12 text-center">
+    <p>© 2025 RepoSentry. All rights reserved.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CyberGuard Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="brand">
+      <div class="logo">RS</div>
+      <h1 class="title">RepoSentry</h1>
+    </div>
+    <span class="subtitle">AI-Powered Repository Security Analyzer</span>
+  </nav>
+
+  <main class="container">
+
+    <!-- Input -->
+    <section class="card input-section">
+      <form id="repoForm" class="form" autocomplete="off">
+        <input
+          id="repoUrl"
+          type="url"
+          placeholder="Enter repo URL (e.g. https://github.com/owner/repo.git)"
+          required
+        />
+        <label class="checkbox">
+          <input id="includeAi" type="checkbox">
+          <span>Include AI Fixes</span>
+        </label>
+        <button type="submit">Analyze</button>
+      </form>
+      <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Analyzing repository…</p>
+      </div>
+    </section>
+
+    <!-- Metrics -->
+    <section class="metrics">
+      <div class="metric-card">
+        <p>Total Files</p>
+        <p id="totalFiles" class="metric-value">—</p>
+      </div>
+      <div class="metric-card">
+        <p>Total Lines of Code</p>
+        <p id="totalLoc" class="metric-value">—</p>
+      </div>
+      <div class="metric-card danger">
+        <p>Vulnerability Density</p>
+        <p id="vulnDensity" class="metric-value">—</p>
+      </div>
+      <div class="metric-card warning">
+        <p>Risk Score</p>
+        <p id="riskScore" class="metric-value">—</p>
+      </div>
+    </section>
+
+    <!-- Charts & Hotspots -->
+    <section class="grid">
+      <div class="card">
+        <h3>Severity Distribution</h3>
+        <canvas id="severityChart" height="200"></canvas>
+      </div>
+      <div class="card">
+        <h3>Top Hotspot Files</h3>
+        <ul id="hotspotFiles" class="list"></ul>
+      </div>
+      <div class="card">
+        <h3>Language Risk Profile</h3>
+        <canvas id="languageChart" height="200"></canvas>
+      </div>
+    </section>
+
+      <section class="grid">
+      <div class="card">
+        <h3>Commits</h3>
+        <p id="totalCommits" class="metric-value">—</p>
+      </div>
+      <div class="card">
+        <h3>Contributors</h3>
+        <p id="contributorsCount" class="metric-value">—</p>
+        <ul id="topContributors" class="list"></ul>
+      </div>
+      <div class="card">
+        <h3>Large Commits</h3>
+        <p id="largeCommitsCount" class="metric-value">—</p>
+        <ul id="largeCommits" class="list"></ul>
+      </div>
+    </section>
+
+    <!-- Vulnerabilities Table -->
+    <section class="card">
+      <div class="table-header">
+        <h3>Detected Vulnerabilities</h3>
+        <input id="searchBox" type="text" placeholder="Filter by file / rule / severity">
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+          <tr>
+            <th>File</th>
+            <th>Line</th>
+            <th>Severity</th>
+            <th>Rule</th>
+            <th>Message</th>
+          </tr>
+          </thead>
+          <tbody id="vulnTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- AI Suggestions -->
+    <section class="card">
+      <div class="section-header">
+        <h3>💡 AI Fix Suggestions</h3>
+        <span id="aiCount">—</span>
+      </div>
+      <div id="aiSuggestions" class="ai-grid"></div>
+    </section>
+
+    <!-- Commit Overview -->
+
+
+  </main>
+
+  <script src="/static/js/app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</body>
+</html>
