@@ -87,9 +87,9 @@ def calculate_vuln_metrics(vulnerabilities, repo_path):
     total_loc = repo_metrics["total_lines_of_code"]
     lang_stats = repo_metrics.get("language_stats", {})
 
-    # Metric 1: Vulnerability Density (per 1000 LoC)
+    # Metric 1: Vulnerability Density (per 100 LoC)
     total_loc = total_loc if total_loc > 0 else 1
-    vuln_density = len(vulnerabilities) / (total_loc / 1000)
+    vuln_density = len(vulnerabilities) / (total_loc / 100)
 
     # Metric 2: Severity Weighted Risk Score
     severity_weights = {"INFO": 1, "WARNING": 5, "ERROR": 10}
@@ -127,7 +127,7 @@ def calculate_vuln_metrics(vulnerabilities, repo_path):
     # Compute density for each language using lang_stats
     for lang, stats in language_risks.items():
         loc = lang_stats.get(lang, 0)
-        stats["density"] = stats["vulns"] / (loc / 1000) if loc > 0 else 0
+        stats["density"] = stats["vulns"] / (loc / 100) if loc > 0 else 0
 
     return {
         "vulnerability_density": round(vuln_density, 2),
