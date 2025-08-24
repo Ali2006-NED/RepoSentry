@@ -98,8 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     card.innerHTML = `
       <div class="flex justify-between items-center mb-2">
-        <div class="text-xs text-slate-500">${s.file}:${s.line} — ${s.rule}</div>
-        <button onclick="navigator.clipboard.writeText(\`${s.suggestion_md.replace(/`/g, "\\`")}\`)" class="text-indigo-600 text-xs hover:underline">Copy</button>
+        <div class="text-xs text-slate-500 font-size-1.5rem">${s.file} (${s.line})</div>
       </div>
       <div class="prose prose-sm max-w-none">${marked.parse(s.suggestion_md || "")}</div>
     `;

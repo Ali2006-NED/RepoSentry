@@ -69,8 +69,10 @@ def normalize_semgrep(raw_results: List[Dict[str, Any]]) -> Dict[str, Any]:
 
         lang = guess_language_from_path(file_path)
 
+        file_name = os.path.basename(file_path)
+
         issues.append({
-            "file": file_path,
+            "file": file_name,
             "line": start,
             "end_line": end,
             "severity": sev,
@@ -101,7 +103,7 @@ def normalize_commits(commit_stats: Dict[str, Any]) -> Dict[str, Any]:
         "contributors_count": len(contributors),
         "top_contributors": contributors[:8],
         "large_commits_count": len(large),
-        "large_commits": large[:5],  # pass a few for detail panel
+        "large_commits": large,  # pass a few for detail panel
     }
 
 
