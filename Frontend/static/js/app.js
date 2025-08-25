@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const totalLoc = document.getElementById("totalLoc");
       const vulnDensity = document.getElementById("vulnDensity");
       const riskScore = document.getElementById("riskScore");
+      const securityDebt = document.getElementById("securityDebt")
 
       // Charts
       let severityChart, languageChart;
@@ -193,6 +194,8 @@ function renderSeverityChart(dist) {
           totalLoc.textContent = data.code_metrics?.total_lines_of_code ?? "—";
           vulnDensity.textContent = data.code_metrics?.vulnerability_density ?? "—";
           riskScore.textContent = data.code_metrics?.risk_score ?? "—";
+          securityDebt.textContent = data.code_metrics?.security_debt_score ?? "—";
+
 
           // Charts & lists
           renderSeverityChart(data.static_analysis?.severity_distribution || {});
