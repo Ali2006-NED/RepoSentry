@@ -30,26 +30,40 @@ document.addEventListener("DOMContentLoaded", () => {
       const searchBox = document.getElementById("searchBox");
       let currentIssues = [];
 
-      // Render helpers
-      function renderSeverityChart(dist) {
-      const colors = labels.map(label => severityColors[label] || "rgba(128,128,128,0.5)");
-        const labels = ["ERROR", "WARNING", "INFO"];
-        const data = labels.map(l => dist?.[l] ?? 0);
-        if (severityChart) severityChart.destroy();
-        severityChart = new Chart(severityCtx, {
-          type: "doughnut",
-          data: {
-            labels,
-            datasets: [{ data backgroundColor: colors,
-      borderColor: colors.map(c => c.replace("0.8", "1")), // solid border
-      borderWidth: 2}]
-          },
-          options: {
-            responsive: true,
-            plugins: { legend: { position: "bottom" } }
-          }
-        });
-      }
+// Define mapping (outside the function)
+const severityColors = {
+  ERROR: "red",   // Red
+  WARNING: "orange", // Orange
+  INFO: "rgba(70, 130, 180, 0.8)"    // Blue
+};
+
+function renderSeverityChart(dist) {
+  const labels = ["ERROR", "WARNING", "INFO"];
+  const data = labels.map(l => dist?.[l] ?? 0);
+
+  // ✅ Get colors safely from mapping
+  const backgroundColors = labels.map(l => severityColors[l] || "rgba(128,128,128,0.5)");
+
+  if (severityChart) severityChart.destroy();
+
+  severityChart = new Chart(severityCtx, {
+    type: "doughnut",
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: backgroundColors,
+        borderColor: backgroundColors.map(c => c.replace("0.8", "1")), // solid border
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: "bottom" } }
+    }
+  });
+}
+
 
       function renderLanguageChart(languageRisks) {
   const labels = Object.keys(languageRisks || {});
