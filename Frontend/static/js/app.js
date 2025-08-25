@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Render helpers
       function renderSeverityChart(dist) {
+      const colors = labels.map(label => severityColors[label] || "rgba(128,128,128,0.5)");
         const labels = ["ERROR", "WARNING", "INFO"];
         const data = labels.map(l => dist?.[l] ?? 0);
         if (severityChart) severityChart.destroy();
@@ -39,7 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
           type: "doughnut",
           data: {
             labels,
-            datasets: [{ data }]
+            datasets: [{ data backgroundColor: colors,
+      borderColor: colors.map(c => c.replace("0.8", "1")), // solid border
+      borderWidth: 2}]
           },
           options: {
             responsive: true,
@@ -48,20 +51,43 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      function renderLanguageChart(langVulns) {
-        const labels = Object.keys(langVulns || {});
-        const data = Object.values(langVulns || {});
-        if (languageChart) languageChart.destroy();
-        languageChart = new Chart(languageCtx, {
-          type: "bar",
-          data: { labels, datasets: [{ label: "Vulns", data }] },
-          options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { x: { ticks: { autoSkip: false } } }
-          }
-        });
+      function renderLanguageChart(languageRisks) {
+  const labels = Object.keys(languageRisks || {});
+  const vulnCounts = labels.map(lang => languageRisks[lang].vulns);
+  const densities = labels.map(lang => languageRisks[lang].density);
+
+  if (languageChart) languageChart.destroy();
+
+  languageChart = new Chart(languageCtx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Vulnerabilities",
+          data: vulnCounts,
+          backgroundColor: "red",
+          yAxisID: "y"
+        },
+        {
+          label: "Risk Density (per 100 LOC)",
+          data: densities,
+          backgroundColor: "orange",
+          yAxisID: "y1"
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true, position: "left" },
+        y1: { beginAtZero: true, position: "right", grid: { drawOnChartArea: false } },
+        x: { ticks: { autoSkip: false } }
       }
+    }
+  });
+}
+
 
       function renderHotspots(list) {
         hotspotFiles.innerHTML = "";
@@ -156,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           // Charts & lists
           renderSeverityChart(data.static_analysis?.severity_distribution || {});
-          renderLanguageChart(data.static_analysis?.language_vulns || {});
+          renderLanguageChart(data.code_metrics?.language_risk_profile || {});
           renderHotspots(data.static_analysis?.hotspots || []);
 
           // Table

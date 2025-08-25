@@ -12,6 +12,7 @@ def evaluate_code_metrics(repo_path):
     file_count = 0
     total_size = 0
     function_count = 0
+    language_stats = {}
 
     function_patterns = {
         '.py': r'^\s*def\s+\w+\(',
@@ -35,9 +36,14 @@ def evaluate_code_metrics(repo_path):
 
                 with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                     lines = f.readlines()
-                    loc_count += len(lines)
+                    line_count = len(lines)
+                    loc_count += line_count
 
-                    # Count comment lines and functions
+                    # Track per-language LOC
+                    lang = EXTENSION_LANG_MAP.get(ext, "Other")
+                    language_stats[lang] = language_stats.get(lang, 0) + line_count
+
+                    # Count comments/functions
                     for line in lines:
                         if ext == '.py' and line.strip().startswith("#"):
                             comment_count += 1
@@ -48,9 +54,8 @@ def evaluate_code_metrics(repo_path):
                         elif ext == '.rb' and line.strip().startswith("#"):
                             comment_count += 1
 
-                        if ext in function_patterns:
-                            if re.search(function_patterns[ext], line):
-                                function_count += 1
+                        if ext in function_patterns and re.search(function_patterns[ext], line):
+                            function_count += 1
 
     average_file_size = total_size / file_count if file_count else 0
     avg_lines_per_func = loc_count / function_count if function_count else 0
@@ -60,8 +65,10 @@ def evaluate_code_metrics(repo_path):
         "total_lines_of_code": loc_count,
         "total_comment_lines": comment_count,
         "average_file_size_bytes": round(average_file_size, 2),
-        "average_lines_per_function": round(avg_lines_per_func, 2)
+        "average_lines_per_function": round(avg_lines_per_func, 2),
+        "language_stats": language_stats
     }
+
 
 EXTENSION_LANG_MAP = {
     ".py": "Python",
@@ -73,8 +80,14 @@ EXTENSION_LANG_MAP = {
     ".cs": "C#",
     ".rb": "Ruby",
     ".go": "Go",
-    ".php": "PHP"
-    # Add more as needed
+    ".php": "PHP",
+    ".html":"HTML",
+    ".css":"CSS",
+    ".sh":"Shell",
+    ".json":"JSON",
+    ".kt":"Kotlin",
+    ".swift":"Swift"
+
 }
 
 def infer_language_from_path(path):
@@ -117,14 +130,22 @@ def calculate_vuln_metrics(vulnerabilities, repo_path):
     language_risks = {}
     for vuln in vulnerabilities:
         lang = vuln.get("language")
-        if not lang:
+        if not lang or lang.lower() in ["", "unknown", "other"]:
             lang = infer_language_from_path(vuln.get("path", ""))
+
+        if not lang:
+            lang = "Other"
 
         if lang not in language_risks:
             language_risks[lang] = {"vulns": 0, "density": 0}
         language_risks[lang]["vulns"] += 1
 
-    # Compute density for each language using lang_stats
+    # Ensure all languages from lang_stats are present, even with 0 vulns
+    for lang, loc in lang_stats.items():
+        if lang not in language_risks:
+            language_risks[lang] = {"vulns": 0, "density": 0}
+
+    # Compute density for each language
     for lang, stats in language_risks.items():
         loc = lang_stats.get(lang, 0)
         stats["density"] = stats["vulns"] / (loc / 100) if loc > 0 else 0

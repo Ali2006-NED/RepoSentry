@@ -83,7 +83,7 @@ def normalize_semgrep(raw_results: List[Dict[str, Any]]) -> Dict[str, Any]:
         })
 
         severity_counts[sev] = severity_counts.get(sev, 0) + 1
-        hotspots[file_path] = hotspots.get(file_path, 0) + 1
+        hotspots[file_name] = hotspots.get(file_name, 0) + 1
         lang_vulns[lang] = lang_vulns.get(lang, 0) + 1
 
     sorted_hotspots = sorted(hotspots.items(), key=lambda x: x[1], reverse=True)
